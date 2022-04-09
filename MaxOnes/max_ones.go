@@ -13,12 +13,16 @@ func main() {
 
 	maxOnes := 0
 	currentOnes := 0
+	maxIndex := len(nums) - 1
 
-	for _, num := range nums {
+	for index, num := range nums {
 
 		if num == 1 {
 			currentOnes = currentOnes + 1
-		} else {
+		}
+
+		// When last element is 1, we make decision by index.
+		if num != 1 || index == maxIndex {
 			if currentOnes > maxOnes {
 				maxOnes = currentOnes
 			}
@@ -26,8 +30,5 @@ func main() {
 		}
 	}
 
-	if currentOnes > maxOnes {
-		maxOnes = currentOnes
-	}
 	fmt.Println(maxOnes)
 }

@@ -1,11 +1,5 @@
 package main
 
-import (
-	"fmt"
-	"strconv"
-	"strings"
-)
-
 // You are given two non-empty linked lists representing two non-negative integers. The digits are stored in
 // reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a
 // linked list.
@@ -39,50 +33,38 @@ func main() {
 
 func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 
-	sum := traverse4num(l1) + traverse4num(l2)
+	l3Head := newNode(0)
+	l3 := l3Head
 
-	sumarr := strings.Split(fmt.Sprintf("%d", sum), "")
-	intarr := []int{}
-	for _, val := range sumarr {
-		intarr = append(intarr, str2num(val))
+	// Traverse lists till both are nil. One can be nil while other is not done.
+	carry := 0
+	for l1 != nil || l2 != nil {
+		sum := 0
+		if l1 != nil {
+			sum = l1.Val
+			l1 = l1.Next
+		}
+		if l2 != nil {
+			sum = sum + l2.Val
+			l2 = l2.Next
+		}
+
+		sum = sum + carry
+		carry = 0
+		// carry will always be 1
+		if sum > 9 {
+			carry = 1
+		}
+
+		l3.Val = sum % 10
+		if l1 != nil || l2 != nil || carry == 1 {
+			// carry is always 1 so for last possible after ending the lists.
+			l3.Next = newNode(1)
+		}
+		l3 = l3.Next
 	}
-	intarr = revIntArray(intarr)
-	fmt.Println(intarr)
 
-	return createList(intarr)
-}
-
-func traverse4num(node *ListNode) int {
-
-	arr := []int{}
-	for node != nil {
-		arr = append(arr, node.Val)
-		node = node.Next
-	}
-	arr = revIntArray(arr)
-
-	numstr := ""
-	for _, val := range arr {
-		numstr = numstr + fmt.Sprintf("%d", val)
-	}
-
-	return str2num(numstr)
-}
-
-func revIntArray(arr []int) []int {
-
-	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
-		arr[i], arr[j] = arr[j], arr[i]
-	}
-	return arr
-}
-
-func str2num(numstr string) int {
-	num, err := strconv.Atoi(numstr)
-	if err != nil {
-		panic("failed to convert string to int " + numstr)
-	}
-	return num
+	return l3Head
 }
 
 func newNode(num int) *ListNode {
